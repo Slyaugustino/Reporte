@@ -1,0 +1,70 @@
+%Teoria de ola de Stokes de segundo orden%
+clear,clc,close all
+fprintf('"TEORIA DE OLA DE STOKES DE SEGUNDO ORDEN"\n\n\n');
+format long
+H=input('Ingrese la altura de ola "H" en metros:\n');
+T=input('Ingrese el periodo "T" en segundos:\n');
+h=input('Ingrese la profundidad "h" en metros:\n');
+z=input('Ingrese z a partir del nivel medio del mar:\n');
+syms fun L
+fun=(((9.81*(T^2))/(2*pi))*(tanh(2*pi*h/L)))-L;
+funp=diff(fun,L);
+funp2=funp^2;
+fun2p=diff(fun,L,2);
+gx=abs((fun*fun2p)/funp2);
+L=1;
+cc=subs(gx,L);
+    if cc<1
+       var=subs(L-(fun/funp),L);
+            for i=subs(var-(fun/funp),var)
+                cont=i+1;
+                sol=subs(cont-(fun/funp),cont);
+            end    
+    end
+k=2*pi/sol;
+criterio=k*h;
+a=H/2;
+s=2*pi/T;
+    if criterio>pi
+       fprintf('\nAGUAS PROFUNDAS\n\n');
+       Lp=(9.81*(T^2))/(2*pi);
+       kp=2*pi/Lp; 
+       cp=(9.81*T)/(2*pi);
+       cgp=cp/2;
+       n1p=a*cos((kp*Lp)-(s*T));
+       n2p=((pi*(H^2))/(4*Lp))*(cos((2*kp*Lp)-(2*s*T)));
+       np=n1p+n2p;
+       ppa=(1030*a*(cosh((kp*h)+(kp*z)))*(cos((kp*Lp)-(s*T))))/(cosh(kp*h));
+       ppb=1030*z;
+       ppc=((9*pi*1030*(H^2)*(tanh(kp*h))*(cosh((2*kp*z)+(2*kp*h)))*(cos((2*kp*Lp)-(2*s*T))))-(3*pi*1030*(H^2)*(tanh(kp*h))*(sinh(kp*h)^2)*(cos((2*kp*Lp)-(2*s*T)))))/(24*Lp*((sinh(kp*h)^2)^2));
+       ppd=((1030*pi*(H^2)*(tanh(kp*h))*(cosh((2*kp*h)+(2*kp*z))))-(1030*pi*(tanh(kp*h))))/(8*Lp*(sinh(kp*h)^2));
+       pp=ppa-ppb+ppc-ppd;
+       fprintf('La amplitud de onda "a" es:\n%0.4f\n',a);fprintf('La relacion de dispersion "s" es:\n%0.4f\n',s);
+       fprintf('La longitud de onda "L" es:\n%0.4f\n',Lp);fprintf('El numero de onda "k" es:\n%0.4f\n',kp);
+       fprintf('La celeridad "C" es:\n%0.4f\n',cp);fprintf('La celeridad de grupo "Cg" es:\n%0.4f\n',cgp);
+       fprintf('La funcion de la onda "eta" es:\n%0.4f\n',np);
+       fprintf('La presion "P" es:\n%0.4f\n',pp);
+       valoresp=[H T h s z a Lp kp cp cgp np pp];
+%        disp(valoresp);
+    elseif criterio>(pi/10) & criterio<pi
+       fprintf('\nAGUAS INTERMEDIAS\n\n');
+       Li=sol;
+       ki=2*pi/sol;
+       ci=s/ki;
+       cgi=(ci/2)*(1+(2*ki*h/(sinh(2*ki*h))));
+       n1i=a*cos((ki*Li)-(s*T));
+       n2i=((2*ki*(a^2)*(cosh(ki*h))*(cos((2*ki*Li)-(2*s*T))))+(ki*(a^2)*(cosh(ki*h))*(cosh(2*k*h))*(cos((2*ki*Li)-(2*s*T)))))/(4*(sinh(ki*h)^3));
+       ni=n1i+n2i;
+       pia=((3*1030*pi*(H^2))/(4*Li*(sinh(ki*h)^2)))*(((3*(cosh(2*ki*z))*(cos((2*ki*Li)-(2*s*T))))-((sinh(ki*h)^2)*(cos((2*ki*Li)-(2*s*T)))))/(3*(sinh(ki*h)^2)));
+       pib=((1030*pi*(H^2)*(cos(2*ki*z)))-(1030*pi*(H^2)))/(4*Li*(sinh(ki*h)));
+       pi=pia-pib;
+       fprintf('La amplitud de onda "a" es:\n%0.4f\n',a);fprintf('La relacion de dispersion "s" es:\n%0.4f\n',s);
+       fprintf('La longitud de onda "L" es:\n%0.4f\n',Li);fprintf('El numero de onda "k" es:\n%0.4f\n',ki);
+       fprintf('La celeridad "C" es:\n%0.4f\n',ci);fprintf('La celeridad de grupo "Cg" es:\n%0.4f\n',cgi);
+       fprintf('La funcion de la onda "eta" es:\n%0.4f\n',ni);
+       fprintf('La presion "P" es:\n%0.4f\n',pi);
+       valoresi=[H T h s z a Li ki ci cgi ni pi];
+%        disp(valoresi);
+    else
+       fprintf('\nPARA ESTA ALTURA DE OLA Y PERIODO NO HAY AGUAS SOMERAS PARA\nLA TEORIA DE STOKES DE SEGUNDO ORDEN\n');
+    end    
